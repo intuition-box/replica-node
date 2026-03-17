@@ -33,8 +33,8 @@ services:
     build:
       context: .
       dockerfile: gateway/Dockerfile
-    ports:
-      - "80:80"
+    expose:
+      - "80"
     restart: unless-stopped
 
 volumes:
