@@ -35,8 +35,15 @@ services:
       dockerfile: gateway/Dockerfile
     expose:
       - "80"
+    networks:
+      - default
+      - coolify
     restart: unless-stopped
 
 volumes:
   datadir:
   status:
+
+networks:
+  coolify:
+    external: true
