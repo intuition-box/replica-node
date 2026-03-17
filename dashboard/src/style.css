@@ -198,6 +198,14 @@ header .badge {
   margin-top: 0.4rem;
 }
 
+.dl-eta {
+  font-size: 0.7rem;
+  color: var(--dim);
+  margin-top: 0.8rem;
+  text-align: center;
+  min-height: 1em;
+}
+
 /* --- Block cards --- */
 
 .grid {

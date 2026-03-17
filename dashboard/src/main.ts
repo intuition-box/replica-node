@@ -29,6 +29,11 @@ let targetBytes = 0
 let totalBytes = 0
 let lerpHandle = 0
 
+// ETA tracking
+let prevBytes = 0
+let prevTime = 0
+let bytesPerSec = 0
+
 function startLerp() {
   if (lerpHandle) return
   lerpHandle = window.setInterval(() => {
@@ -56,6 +61,24 @@ function updateDownloadDisplay() {
   if (fill) fill.style.width = `${pct}%`
   if (sizeLabel) sizeLabel.textContent = `${dlGB.toFixed(2)} / ${tGB.toFixed(1)} GB`
   if (pctLabel) pctLabel.textContent = `${pct.toFixed(1)}%`
+
+  const etaEl = document.getElementById('dl-eta')
+  if (etaEl && bytesPerSec > 0) {
+    const remaining = totalBytes - displayBytes
+    const secsLeft = Math.max(0, Math.round(remaining / bytesPerSec))
+    const finishAt = new Date(Date.now() + secsLeft * 1000)
+    etaEl.textContent = `~${fmtDuration(secsLeft)} left \u00b7 done at ~${finishAt.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`
+  }
+}
+
+function fmtDuration(secs: number): string {
+  if (secs < 60) return `${secs}s`
+  const m = Math.floor(secs / 60)
+  const s = secs % 60
+  if (m < 60) return `${m}min ${s.toString().padStart(2, '0')}s`
+  const h = Math.floor(m / 60)
+  const rm = m % 60
+  return `${h}h ${rm.toString().padStart(2, '0')}min`
 }
 
 async function fetchStatus(): Promise<Status> {
@@ -104,6 +127,7 @@ function downloadingHTML(): string {
         <span class="dl-pct">0.0%</span>
       </div>
     </div>
+    <div class="dl-eta" id="dl-eta"></div>
   `
 }
 
@@ -207,7 +231,22 @@ function render() {
 
   // Update download animation target
   if (status.phase === 'downloading') {
-    targetBytes = status.downloadedBytes ?? 0
+    const newBytes = status.downloadedBytes ?? 0
+    const now = Date.now()
+
+    // Calculate speed from delta between polls
+    if (prevTime > 0 && newBytes > prevBytes) {
+      const elapsed = (now - prevTime) / 1000
+      if (elapsed > 0) {
+        const speed = (newBytes - prevBytes) / elapsed
+        // Smooth the speed estimate
+        bytesPerSec = bytesPerSec > 0 ? bytesPerSec * 0.7 + speed * 0.3 : speed
+      }
+    }
+    prevBytes = newBytes
+    prevTime = now
+
+    targetBytes = newBytes
     totalBytes = status.totalBytes ?? 34_000_000_000
     startLerp()
     updateDownloadDisplay()
