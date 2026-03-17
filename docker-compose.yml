@@ -11,11 +11,12 @@ services:
     restart: unless-stopped
 
   nitro:
-    image: public.ecr.aws/i6b2w2n6/nitro-node:v3.7.1
+    build:
+      context: .
+      dockerfile: nitro/Dockerfile
     platform: linux/amd64
     volumes:
       - datadir:/home/user/.arbitrum
-      - ./nodeConfig.json:/config/nodeConfig.json:ro
     entrypoint:
       - /usr/local/bin/nitro
       - --conf.file=/config/nodeConfig.json
