@@ -89,9 +89,9 @@ start_status_server &
 
 # --- Lifecycle ---
 
-# Check if datadir already exists
-if [ -d "$DATA_DIR/datadir" ] && [ "$(ls -A $DATA_DIR/datadir 2>/dev/null)" ]; then
-  echo "Existing datadir found, skipping download"
+# Check if data already exists (either from snapshot or previous run)
+if [ -d "$DATA_DIR/intuition" ] && [ "$(ls -A $DATA_DIR/intuition 2>/dev/null)" ]; then
+  echo "Existing data found, skipping download"
   write_status '{"phase":"starting","message":"Existing data found, starting node..."}'
   touch "$READY_FILE"
 else
@@ -130,9 +130,13 @@ else
   cd "$DATA_DIR"
   tar -xzf snapshot.tar.gz
 
-  # Handle nested directory structure (snapshot extracts to mnt/datadir)
-  if [ -d "$DATA_DIR/mnt/datadir" ]; then
-    mv "$DATA_DIR/mnt/datadir" "$DATA_DIR/datadir"
+  # Handle nested directory structure (snapshot extracts to mnt/datadir/intuition/)
+  # Nitro expects data at /home/user/.arbitrum/intuition/ which maps to $DATA_DIR/intuition/
+  if [ -d "$DATA_DIR/mnt/datadir/intuition" ]; then
+    mv "$DATA_DIR/mnt/datadir/intuition" "$DATA_DIR/intuition"
+    rm -rf "$DATA_DIR/mnt"
+  elif [ -d "$DATA_DIR/mnt/datadir" ]; then
+    mv "$DATA_DIR/mnt/datadir"/* "$DATA_DIR/"
     rm -rf "$DATA_DIR/mnt"
   fi
 
