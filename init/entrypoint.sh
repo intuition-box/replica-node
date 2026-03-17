@@ -11,6 +11,9 @@ NITRO_RPC="${NITRO_RPC:-http://nitro:8545}"
 
 mkdir -p "$STATUS_DIR" "$DATA_DIR"
 
+# Write initial status immediately so /api/status never 502s
+echo '{"phase":"installing"}' > "$STATUS_FILE"
+
 write_status() {
   echo "$1" > "$STATUS_FILE"
 }

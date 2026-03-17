@@ -8,20 +8,11 @@ services:
       - SNAPSHOT_URL=${SNAPSHOT_URL:-https://constellationlabs-dashboard-beta.s3.amazonaws.com/intuition-03-11-2026.tar.gz}
       - OFFICIAL_RPC=https://rpc.intuition.systems/http
       - NITRO_RPC=http://nitro:8545
-    healthcheck:
-      test: ["CMD", "test", "-f", "/data/.ready"]
-      interval: 10s
-      timeout: 5s
-      retries: 2000
-      start_period: 5s
     restart: unless-stopped
 
   nitro:
     image: public.ecr.aws/i6b2w2n6/nitro-node:v3.7.1
     platform: linux/amd64
-    depends_on:
-      init:
-        condition: service_healthy
     volumes:
       - datadir:/home/user/.arbitrum
       - ./nodeConfig.json:/config/nodeConfig.json:ro
@@ -44,8 +35,6 @@ services:
       dockerfile: gateway/Dockerfile
     ports:
       - "80:80"
-    depends_on:
-      - init
     restart: unless-stopped
 
 volumes:
