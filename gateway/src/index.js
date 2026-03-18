@@ -1,8 +1,10 @@
 import { createServer } from 'http';
-import { createProxyServer } from 'http-proxy';
+import httpProxy from 'http-proxy';
 import { readFileSync, existsSync } from 'fs';
 import { join } from 'path';
 import { isValidKey, hasAnyKeys, logRequest } from './db.js';
+
+const { createProxyServer } = httpProxy;
 
 const PORT = parseInt(process.env.PORT || '80');
 const NITRO_HTTP = process.env.NITRO_HTTP || 'http://nitro:8545';
