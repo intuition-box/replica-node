@@ -40,17 +40,10 @@ services:
     build:
       context: .
       dockerfile: gateway/Dockerfile
-    expose:
-      - "80"
-    networks:
-      - default
-      - coolify
+    ports:
+      - "11550:80"
     restart: unless-stopped
 
 volumes:
   datadir:
   status:
-
-networks:
-  coolify:
-    external: true
