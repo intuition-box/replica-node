@@ -2,6 +2,8 @@
 
 Run a personal Intuition L3 RPC node on your machine. No dashboard, no API key protected gateway — one simple RPC endpoint in local.
 
+> The official replica guide from the Intuition team can be found at [hub.intuition.systems](https://hub.intuition.systems/) (`replica-guide.zip`).
+
 ## Prerequisites
 
 - Docker
