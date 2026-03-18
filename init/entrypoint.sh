@@ -97,23 +97,19 @@ get_batch_progress() {
 }
 
 # --- Start HTTP status server in background ---
-start_status_server() {
-  mkdir -p /srv/api
-  ln -sf "$STATUS_FILE" /srv/api/status
-  while true; do
-    {
-      echo "HTTP/1.1 200 OK"
-      echo "Content-Type: application/json"
-      echo "Access-Control-Allow-Origin: *"
-      echo "Cache-Control: no-cache"
-      echo "Connection: close"
-      echo ""
-      cat "$STATUS_FILE" 2>/dev/null || echo '{"phase":"installing"}'
-    } | nc -l -p 9000 -w 1 > /dev/null 2>&1 || true
-  done
-}
+# Use a CGI script with busybox httpd for reliable concurrent connections
+mkdir -p /srv/cgi-bin
+cat > /srv/cgi-bin/status <<'CGIEOF'
+#!/bin/sh
+echo "Content-Type: application/json"
+echo "Access-Control-Allow-Origin: *"
+echo "Cache-Control: no-cache"
+echo ""
+cat /status/status.json 2>/dev/null || echo '{"phase":"installing"}'
+CGIEOF
+chmod +x /srv/cgi-bin/status
 
-start_status_server &
+busybox httpd -f -p 9000 -h /srv &
 
 # --- Lifecycle ---
 

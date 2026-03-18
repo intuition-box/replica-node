@@ -95,7 +95,7 @@ const server = createServer(async (req, res) => {
   if (pathname === '/api/status') {
     for (let attempt = 0; attempt < 3; attempt++) {
       try {
-        const statusRes = await fetch(`${INIT_STATUS}/api/status`, { signal: AbortSignal.timeout(2000) });
+        const statusRes = await fetch(`${INIT_STATUS}/cgi-bin/status`, { signal: AbortSignal.timeout(2000) });
         const body = await statusRes.text();
         lastStatus = body;
         res.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-cache', 'Access-Control-Allow-Origin': '*' });
