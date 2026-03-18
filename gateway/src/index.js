@@ -80,7 +80,7 @@ function authRequired() {
   return !!(API_KEY || hasAnyKeys());
 }
 
-const server = createServer((req, res) => {
+const server = createServer(async (req, res) => {
   const url = new URL(req.url, `http://localhost:${PORT}`);
   const pathname = url.pathname;
   const start = performance.now();
@@ -90,9 +90,18 @@ const server = createServer((req, res) => {
     return serveStatic(req, res);
   }
 
-  // Status API - always public
+  // Status API - always public, fetch directly (nc server is flaky with proxying)
   if (pathname === '/api/status') {
-    return proxy.web(req, res, { target: INIT_STATUS });
+    try {
+      const statusRes = await fetch(`${INIT_STATUS}/api/status`);
+      const body = await statusRes.text();
+      res.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-cache', 'Access-Control-Allow-Origin': '*' });
+      res.end(body);
+    } catch {
+      res.writeHead(502, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ phase: 'starting', message: 'Status unavailable' }));
+    }
+    return;
   }
 
   // RPC endpoints: /http or /http/KEY
