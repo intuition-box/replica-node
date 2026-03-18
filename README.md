@@ -4,6 +4,8 @@ One-click deployable replica node for the Intuition L3 (Arbitrum Nitro on Base).
 
 Deploy via [Coolify](https://coolify.io), Docker Compose, or any Docker-based PaaS.
 
+> **Just need a personal local RPC?** See [local-rpc.md](local-rpc.md) — single Docker command, no dashboard or API keys.
+
 ## Quick Start (Coolify)
 
 1. Create a new **Docker Compose** project in Coolify
