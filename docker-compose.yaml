@@ -42,15 +42,13 @@ services:
       dockerfile: gateway/Dockerfile
     expose:
       - "80"
-    networks:
-      - default
-      - coolify
+    volumes:
+      - gatewaydata:/data
+    environment:
+      - API_KEY=${API_KEY:-}
     restart: unless-stopped
 
 volumes:
   datadir:
   status:
-
-networks:
-  coolify:
-    external: true
+  gatewaydata:
