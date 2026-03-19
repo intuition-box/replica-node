@@ -134,7 +134,7 @@ A good budget option at ~$10/month:
 
 | Contract | Address |
 |---|---|
-| Bridge | `0x98EC528e10d54c3Db77c08021644DBe48e994726` |
-| Inbox | `0x9F82973d054809dD9cae4836d70ce70DcE1403B0` |
-| Sequencer Inbox | `0xFC239694C97b06BF2409C88EA199f7110f39A9bF` |
-| Rollup | `0x6B78C90257A7a12a3E91EbF3CAFcc7E518FAcD38` |
+| Bridge | [`0x98EC528e10d54c3Db77c08021644DBe48e994726`](https://basescan.org/address/0x98EC528e10d54c3Db77c08021644DBe48e994726) |
+| Inbox | [`0x9F82973d054809dD9cae4836d70ce70DcE1403B0`](https://basescan.org/address/0x9F82973d054809dD9cae4836d70ce70DcE1403B0) |
+| Sequencer Inbox | [`0xFC239694C97b06BF2409C88EA199f7110f39A9bF`](https://basescan.org/address/0xFC239694C97b06BF2409C88EA199f7110f39A9bF) |
+| Rollup | [`0x6B78C90257A7a12a3E91EbF3CAFcc7E518FAcD38`](https://basescan.org/address/0x6B78C90257A7a12a3E91EbF3CAFcc7E518FAcD38) |
