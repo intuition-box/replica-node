@@ -46,6 +46,7 @@ services:
       - gatewaydata:/data
     environment:
       - API_KEY=${API_KEY:-}
+      - DOMAIN=${DOMAIN:-}
     restart: unless-stopped
 
 volumes:

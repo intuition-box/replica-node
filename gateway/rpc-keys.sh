@@ -4,6 +4,7 @@ set -e
 KEYS_FILE="${KEYS_FILE:-/data/keys.json}"
 KEYS_MAP="/etc/nginx/keys.map"
 LOG_FILE="/data/rpc.log"
+DOMAIN="${DOMAIN:-${SERVICE_FQDN_GATEWAY:-${COOLIFY_FQDN:-}}}"
 
 # Ensure keys.json exists
 if [ ! -f "$KEYS_FILE" ]; then
@@ -59,8 +60,13 @@ cmd_add() {
   echo "  Key created for \"$NAME\":"
   echo "  $KEY"
   echo ""
-  echo "  HTTP: /http/$KEY"
-  echo "  WS:   /ws/$KEY"
+  if [ -n "$DOMAIN" ]; then
+    echo "  HTTP: https://$DOMAIN/http/$KEY"
+    echo "  WS:   wss://$DOMAIN/ws/$KEY"
+  else
+    echo "  HTTP: /http/$KEY"
+    echo "  WS:   /ws/$KEY"
+  fi
   echo ""
 }
 
@@ -128,6 +134,11 @@ cmd_rotate() {
   echo "  Old: $OLD_KEY (revoked)"
   echo "  New: $NEW_KEY"
   echo ""
+  if [ -n "$DOMAIN" ]; then
+    echo "  HTTP: https://$DOMAIN/http/$NEW_KEY"
+    echo "  WS:   wss://$DOMAIN/ws/$NEW_KEY"
+    echo ""
+  fi
 }
 
 cmd_list() {
