@@ -41,14 +41,15 @@ services:
       context: .
       dockerfile: gateway/Dockerfile
     expose:
-      - "80"
+      - "11550:80"
     volumes:
       - gatewaydata:/data
     environment:
       - API_KEY=${API_KEY:-}
       - DOMAIN=${DOMAIN:-}
+    ports:
+      - "11550:80"
     restart: unless-stopped
-
 volumes:
   datadir:
   status:
