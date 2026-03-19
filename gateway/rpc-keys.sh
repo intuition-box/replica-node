@@ -64,15 +64,33 @@ cmd_add() {
   echo ""
 }
 
+# Resolve a key or name to the actual key
+resolve_key() {
+  INPUT="$1"
+  # Try as key first
+  FOUND=$(jq -r --arg k "$INPUT" '.[] | select(.key == $k and .revoked != true) | .key' "$KEYS_FILE" 2>/dev/null)
+  if [ -n "$FOUND" ]; then
+    echo "$FOUND"
+    return
+  fi
+  # Try as name
+  FOUND=$(jq -r --arg n "$INPUT" '.[] | select(.name == $n and .revoked != true) | .key' "$KEYS_FILE" 2>/dev/null)
+  if [ -n "$FOUND" ]; then
+    echo "$FOUND"
+    return
+  fi
+  echo ""
+}
+
 cmd_revoke() {
-  KEY="$1"
-  if [ -z "$KEY" ]; then
-    echo "Usage: rpc-keys revoke <key>"
+  INPUT="$1"
+  if [ -z "$INPUT" ]; then
+    echo "Usage: rpc-keys revoke <key|name>"
     exit 1
   fi
-  FOUND=$(jq --arg k "$KEY" '[.[] | select(.key == $k and .revoked != true)] | length' "$KEYS_FILE")
-  if [ "$FOUND" -eq 0 ]; then
-    echo "Key not found or already revoked."
+  KEY=$(resolve_key "$INPUT")
+  if [ -z "$KEY" ]; then
+    echo "Key or name \"$INPUT\" not found or already revoked."
     exit 1
   fi
   jq --arg k "$KEY" 'map(if .key == $k then .revoked = true else . end)' "$KEYS_FILE" > "$KEYS_FILE.tmp"
@@ -82,9 +100,14 @@ cmd_revoke() {
 }
 
 cmd_rotate() {
-  OLD_KEY="$1"
+  INPUT="$1"
+  if [ -z "$INPUT" ]; then
+    echo "Usage: rpc-keys rotate <key|name>"
+    exit 1
+  fi
+  OLD_KEY=$(resolve_key "$INPUT")
   if [ -z "$OLD_KEY" ]; then
-    echo "Usage: rpc-keys rotate <key>"
+    echo "Key or name \"$INPUT\" not found or already revoked."
     exit 1
   fi
   NAME=$(jq -r --arg k "$OLD_KEY" '.[] | select(.key == $k and .revoked != true) | .name' "$KEYS_FILE")
@@ -156,15 +179,24 @@ cmd_list() {
 }
 
 cmd_stats() {
-  KEY="$1"
+  INPUT="$1"
   if [ ! -f "$LOG_FILE" ]; then
     echo "No request logs yet."
     return
   fi
 
+  KEY=""
+  if [ -n "$INPUT" ]; then
+    KEY=$(resolve_key "$INPUT")
+    if [ -z "$KEY" ]; then
+      KEY="$INPUT"
+    fi
+  fi
+
   if [ -n "$KEY" ]; then
+    NAME=$(jq -r --arg k "$KEY" '.[] | select(.key == $k) | .name' "$KEYS_FILE" 2>/dev/null)
     FILTER="key=$KEY "
-    LABEL="Stats for $KEY"
+    LABEL="Stats for ${NAME:-$KEY}"
   else
     FILTER=""
     LABEL="Global stats"
@@ -201,11 +233,11 @@ case "${1:-help}" in
     echo "  rpc-keys — Manage API keys for the Intuition L3 RPC"
     echo ""
     echo "  Commands:"
-    echo "    add <name>       Create a new API key"
-    echo "    revoke <key>     Revoke an API key"
-    echo "    rotate <key>     Revoke old key, create new one"
-    echo "    list             List all keys with usage stats"
-    echo "    stats [key]      Show request stats"
+    echo "    add <name>            Create a new API key"
+    echo "    revoke <key|name>     Revoke an API key"
+    echo "    rotate <key|name>     Revoke old key, create new one"
+    echo "    list                  List all keys with usage stats"
+    echo "    stats [key|name]      Show request stats"
     echo ""
     ;;
 esac
