@@ -22,7 +22,11 @@ body {
 
 #app {
   width: 100%;
-  max-width: 640px;
+  max-width: 520px;
+}
+
+@media (min-width: 768px) {
+  body { font-size: 18px; }
 }
 
 /* --- Header --- */
@@ -33,7 +37,7 @@ header {
 }
 
 header h1 {
-  font-size: 1.2rem;
+  font-size: 1.8rem;
   font-weight: 600;
   color: var(--white);
   letter-spacing: 0.05em;
@@ -41,8 +45,8 @@ header h1 {
 
 header .badge {
   display: inline-block;
-  margin-top: 0.4rem;
-  font-size: 0.6rem;
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
   color: var(--dim);
   border: 1px solid var(--border);
   border-radius: 100px;
@@ -55,14 +59,14 @@ header .badge {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  margin-bottom: 2rem;
-  font-size: 0.75rem;
+  gap: 0.6rem;
+  margin-bottom: 2.5rem;
+  font-size: 1rem;
 }
 
 .status-dot {
-  width: 6px;
-  height: 6px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   background: var(--dim);
 }
@@ -100,7 +104,7 @@ header .badge {
 }
 
 .endpoint-row .ep-label {
-  font-size: 0.6rem;
+  font-size: 0.8rem;
   color: var(--dim);
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -109,7 +113,7 @@ header .badge {
 }
 
 .endpoint-row .ep-url {
-  font-size: 0.7rem;
+  font-size: 0.85rem;
   color: var(--text);
   flex: 1;
   overflow: hidden;
@@ -122,8 +126,8 @@ header .badge {
   border: 1px solid var(--border);
   color: var(--dim);
   font-family: inherit;
-  font-size: 0.6rem;
-  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  padding: 0.3rem 0.6rem;
   border-radius: 4px;
   cursor: pointer;
   white-space: nowrap;
@@ -141,7 +145,7 @@ header .badge {
 }
 
 .section-label {
-  font-size: 0.55rem;
+  font-size: 0.75rem;
   color: var(--dim);
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -167,19 +171,19 @@ header .badge {
 }
 
 .block-row .bl-label {
-  font-size: 0.6rem;
+  font-size: 0.8rem;
   color: var(--dim);
 }
 
 .block-row .bl-value {
-  font-size: 0.85rem;
+  font-size: 1.1rem;
   font-weight: 600;
   color: var(--white);
   font-variant-numeric: tabular-nums;
 }
 
 .block-row .bl-hex {
-  font-size: 0.6rem;
+  font-size: 0.8rem;
   color: var(--dim);
   margin-left: 0.5rem;
 }
@@ -341,7 +345,7 @@ header .badge {
 
 .footer {
   text-align: center;
-  font-size: 0.55rem;
+  font-size: 0.75rem;
   color: var(--dim);
 }
 
